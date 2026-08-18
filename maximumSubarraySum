@@ -1,0 +1,31 @@
+#define maxFreq 100001
+long long maximumSubarraySum(int* nums, int numsSize, int k) 
+{
+    int freq[maxFreq] = {0};
+    long long sum = 0, maxSum = 0;
+    int tail = 0, head = 0, length = 0;
+    for (head = 0; head < numsSize; head++) 
+    {
+        freq[nums[head]]++;
+        sum += nums[head];
+        if (freq[nums[head]] != 0) 
+        {
+            while (freq[nums[head]] > 1) 
+            {
+                freq[nums[tail]]--;
+                sum -= nums[tail++];
+            }
+        }
+        length = (head - tail) + 1;
+        if (length == k) 
+        {
+            if (sum > maxSum) 
+            {
+                maxSum = sum;
+            }
+            freq[nums[tail]]--;
+            sum -= nums[tail++];
+        }
+    }
+    return maxSum;
+}
