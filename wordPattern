@@ -1,0 +1,59 @@
+#include <stdbool.h>
+#include <string.h>
+#include <stdlib.h>
+
+bool wordPattern(char* pattern, char* s) {
+    char* charToWord[26] = {NULL};
+    
+    char* sCopy = malloc(strlen(s) + 1);
+    strcpy(sCopy, s);
+    
+    int patternLen = strlen(pattern);
+    int wordCount = 0;
+    
+    char* word = strtok(sCopy, " ");
+    
+    while (word != NULL) {
+        if (wordCount >= patternLen) {
+            free(sCopy);
+            return false;
+        }
+        
+        char ch = pattern[wordCount];
+        int index = ch - 'a';
+        
+        if (charToWord[index] != NULL) {
+            if (strcmp(charToWord[index], word) != 0) {
+                free(sCopy);
+                for (int i = 0; i < 26; i++) {
+                    if (charToWord[i] != NULL) free(charToWord[i]);
+                }
+                return false;
+            }
+        } else {
+            for (int i = 0; i < 26; i++) {
+                if (charToWord[i] != NULL && strcmp(charToWord[i], word) == 0) {
+                    free(sCopy);
+                    for (int j = 0; j < 26; j++) {
+                        if (charToWord[j] != NULL) free(charToWord[j]);
+                    }
+                    return false;
+                }
+            }
+            charToWord[index] = malloc(strlen(word) + 1);
+            strcpy(charToWord[index], word);
+        }
+        
+        wordCount++;
+        word = strtok(NULL, " ");
+    }
+    
+    for (int i = 0; i < 26; i++) {
+        if (charToWord[i] != NULL) {
+            free(charToWord[i]);
+        }
+    }
+    free(sCopy);
+    
+    return wordCount == patternLen;
+}
