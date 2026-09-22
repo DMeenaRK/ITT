@@ -1,0 +1,29 @@
+#include <stdbool.h>
+#include <string.h>
+#include <stdlib.h>
+
+bool hasMatch(char* s, char* p) {
+    char* starPos = strchr(p, '*');
+    
+    int prefixLen = starPos - p;
+    int suffixLen = strlen(starPos + 1);
+    
+    char* prefix = malloc(prefixLen + 1);
+    strncpy(prefix, p, prefixLen);
+    prefix[prefixLen] = '\0';
+    
+    char* suffix = starPos + 1;
+    
+    char* prefixMatch = strstr(s, prefix);
+    bool result = false;
+    
+    if (prefixMatch != NULL) {
+        char* suffixStartSearch = prefixMatch + prefixLen;
+        if (strstr(suffixStartSearch, suffix) != NULL) {
+            result = true;
+        }
+    }
+    
+    free(prefix);
+    return result;
+}
